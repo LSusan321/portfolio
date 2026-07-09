@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>刘欣然 — 作品集 | AI × 心理学 产品实践者</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #0A0E27;
+    --navy: #0F1B3D;
+    --cyan: #5EDCF4;
+    --pink: #F0A6CA;
+    --yellow: #F4D03F;
+    --lavender: #E2D5F2;
+    --white: #FFFFFF;
+    --text-body: rgba(255,255,255,0.72);
+    --text-dim: rgba(255,255,255,0.45);
+    --shadow-hero: 4px 4px 0 var(--yellow), 8px 8px 0 var(--navy);
+    --shadow-stat: 3px 3px 0 var(--navy);
+    --shadow-card: 6px 6px 0 rgba(15,27,61,0.15);
+    --shadow-card-featured: 8px 8px 0 var(--yellow);
+    --shadow-btn: 4px 0 0 var(--navy), 0 4px 0 var(--navy), 4px 4px 0 var(--navy), 8px 4px 0 var(--yellow), 4px 8px 0 var(--yellow), 8px 8px 0 var(--yellow);
+    --shadow-btn-pink: 4px 0 0 var(--navy), 0 4px 0 var(--navy), 4px 4px 0 var(--navy), 8px 4px 0 var(--cyan), 4px 8px 0 var(--cyan), 8px 8px 0 var(--cyan);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;cursor:crosshair}
+  body{
+    font-family: "Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+    background: var(--void);
+    color: var(--white);
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+  }
+
+  /* ── Atmosphere (fixed) ── */
+  .bg-grid{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(94,220,244,0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(94,220,244,0.055) 1px, transparent 1px);
+    background-size:40px 40px;
+  }
+  .grain{
+    position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.03;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .scanlines{
+    position:fixed;inset:0;z-index:2;pointer-events:none;mix-blend-mode:multiply;
+    background:repeating-linear-gradient(0deg,transparent 0px,transparent 2px,rgba(10,14,39,0.04) 2px,rgba(10,14,39,0.04) 4px);
+  }
+  .crt-glow{
+    position:fixed;inset:0;z-index:3;pointer-events:none;
+    background:radial-gradient(ellipse at center,transparent 45%,rgba(10,14,39,0.3) 100%);
+  }
+  .starfield{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .starfield .star{position:absolute;animation:twinkle 3s ease-in-out infinite}
+  @keyframes twinkle{0%,100%{opacity:0.25}50%{opacity:1}}
+
+  /* ── Sections ── */
+  .section{
+    position:relative;z-index:10;
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:6vh 4vw;
+  }
+  .section-inner{max-width:1200px;width:100%;position:relative;z-index:10}
+
+  /* Surface variants */
+  .surface-void{background:transparent}
+  .surface-cyan{
+    background:var(--cyan);
+    background-image:linear-gradient(rgba(15,27,61,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(15,27,61,0.06) 1px,transparent 1px);
+    background-size:40px 40px;
+  }
+  .surface-pink{
+    background:var(--pink);
+    background-image:linear-gradient(rgba(15,27,61,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(15,27,61,0.06) 1px,transparent 1px);
+    background-size:40px 40px;
+  }
+  .surface-lavender{
+    background:var(--lavender);
+    background-image:linear-gradient(rgba(15,27,61,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(15,27,61,0.06) 1px,transparent 1px);
+    background-size:40px 40px;
+  }
+
+  /* Colored-surface text overrides */
+  .surface-cyan .t-headline,.surface-pink .t-headline,.surface-lavender .t-headline{color:var(--navy)}
+  .surface-cyan .t-subhead,.surface-pink .t-subhead,.surface-lavender .t-subhead{color:var(--navy)}
+  .surface-cyan .t-display,.surface-pink .t-display,.surface-lavender .t-display{color:var(--navy);text-shadow:none}
+  .surface-cyan .t-stat,.surface-pink .t-stat,.surface-lavender .t-stat{color:var(--navy);text-shadow:none}
+  .surface-cyan .t-body,.surface-pink .t-body,.surface-lavender .t-body{color:rgba(15,27,61,0.72)}
+  .surface-cyan .t-hero-tagline,.surface-pink .t-hero-tagline,.surface-lavender .t-hero-tagline{color:rgba(15,27,61,0.68)}
+  .surface-cyan .label-pill,.surface-pink .label-pill,.surface-lavender .label-pill{color:var(--cyan)}
+  .surface-cyan .hero-badge-outline,.surface-pink .hero-badge-outline,.surface-lavender .hero-badge-outline{border-color:var(--navy);color:var(--navy)}
+
+  /* ── Typography ── */
+  .t-hero{
+    font-size:clamp(44px,10vw,100px);font-weight:900;
+    line-height:1.15;text-shadow:var(--shadow-hero);color:var(--cyan);
+  }
+  .t-display{font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1.15;color:var(--cyan)}
+  .t-headline{font-size:clamp(24px,3.5vw,40px);font-weight:700;line-height:1.2;color:var(--cyan)}
+  .t-subhead{font-size:clamp(18px,2.5vw,24px);font-weight:700;line-height:1.2}
+  .t-stat{font-size:clamp(32px,4vw,52px);font-weight:900;line-height:1;color:var(--cyan);text-shadow:var(--shadow-stat)}
+  .t-body{font-size:clamp(14px,1.2vw,17px);font-weight:400;line-height:1.85;color:var(--text-body)}
+  .t-hero-tagline{font-size:clamp(14px,1.5vw,18px);font-weight:400;line-height:1.9;color:var(--text-body)}
+  .t-badge{font-size:11px;font-weight:500;letter-spacing:0.05em}
+
+  /* ── Label Pill ── */
+  .label-pill{
+    display:inline-block;background:var(--navy);color:var(--yellow);
+    padding:6px 14px;font-size:11px;font-weight:500;letter-spacing:0.05em;margin-bottom:16px;
+  }
+
+  /* Hero Badge (outline) */
+  .hero-badge-cluster{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+  .hero-badge-outline{
+    border:2px solid var(--yellow);color:var(--yellow);
+    padding:6px 14px;font-size:11px;font-weight:500;letter-spacing:0.05em;
+  }
+
+  /* ── Pixel Button ── */
+  .pixel-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:14px 32px;background:var(--cyan);color:var(--navy);
+    font-size:14px;font-weight:700;text-decoration:none;
+    box-shadow:var(--shadow-btn);transition:transform 0.2s,box-shadow 0.2s;letter-spacing:0.04em;
+  }
+  .pixel-btn:hover{transform:translate(2px,2px);box-shadow:4px 0 0 var(--navy),0 4px 0 var(--navy),4px 4px 0 var(--navy)}
+  .pixel-btn-pink{background:var(--pink);box-shadow:var(--shadow-btn-pink)}
+  .pixel-btn-pink:hover{transform:translate(2px,2px);box-shadow:4px 0 0 var(--navy),0 4px 0 var(--navy),4px 4px 0 var(--navy)}
+
+  /* ── Corner Brackets ── */
+  .bracketed{position:relative}
+  .bracketed::before,.bracketed::after{
+    content:'';position:absolute;width:24px;height:24px;pointer-events:none;z-index:5;
+  }
+  .bracketed::before{top:-2px;left:-2px;border-top:4px solid var(--cyan);border-left:4px solid var(--cyan)}
+  .bracketed::after{bottom:-2px;right:-2px;border-bottom:4px solid var(--cyan);border-right:4px solid var(--cyan)}
+  .bracketed-yellow::before,.bracketed-yellow::after{border-color:var(--yellow)}
+  .bracketed-pink::before,.bracketed-pink::after{border-color:var(--pink)}
+
+  /* ── Stat Block ── */
+  .stat-block{
+    background:rgba(94,220,244,0.06);border:2px solid rgba(94,220,244,0.15);
+    padding:28px 16px;text-align:center;position:relative;
+  }
+  .stat-block .stat-label{font-size:11px;font-weight:500;color:var(--pink);letter-spacing:0.05em;margin-top:8px}
+
+  /* ── Feature Card ── */
+  .feature-card{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    border:2px solid rgba(15,27,61,0.2);
+    padding:clamp(20px,3vw,32px) clamp(16px,3vw,28px);
+  }
+
+  /* ── Hero ── */
+  .hero-inner{text-align:center;max-width:800px;margin:0 auto}
+  .hero-stats{display:flex;gap:clamp(20px,4vw,48px);justify-content:center;flex-wrap:wrap;margin:36px 0}
+  .hero-stat-item{text-align:center}
+
+  /* ── Quote Line ── */
+  .quote-line{width:60px;height:4px;background:var(--yellow);box-shadow:4px 4px 0 var(--navy)}
+
+  /* ── Works Grid ── */
+  .works-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);
+    gap:clamp(20px,3vw,32px);max-width:1100px;margin:0 auto;
+  }
+  .works-card{
+    background:var(--navy);border:2px solid rgba(94,220,244,0.15);
+    padding:clamp(20px,3vw,32px);
+    cursor:pointer;transition:transform 0.3s,box-shadow 0.3s;
+    position:relative;text-decoration:none;color:inherit;display:block;
+  }
+  .works-card:hover{transform:translate(-2px,-4px);box-shadow:var(--shadow-card-featured)}
+  .works-card .card-img{
+    width:100%;height:160px;object-fit:cover;margin-bottom:16px;
+    border:2px solid rgba(94,220,244,0.2);
+  }
+  .works-card .card-meta{
+    display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text-dim);margin-top:12px;
+  }
+  .works-card .card-meta span{display:flex;align-items:center;gap:4px}
+
+  /* ── Skill Cards ── */
+  .skills-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:clamp(16px,2.5vw,24px);max-width:1100px;margin:0 auto;
+  }
+  .skill-card{
+    background:var(--navy);border:2px solid rgba(94,220,244,0.12);
+    padding:28px 24px;position:relative;
+  }
+  .skill-card .skill-icon-num{
+    font-size:28px;font-weight:900;color:var(--cyan);
+    text-shadow:var(--shadow-stat);margin-bottom:12px;line-height:1;
+  }
+
+  /* ── Timeline ── */
+  .timeline{position:relative;max-width:700px;margin:0 auto;padding-left:36px}
+  .timeline::before{
+    content:'';position:absolute;left:10px;top:8px;bottom:8px;width:4px;
+    background:repeating-linear-gradient(to bottom,var(--cyan) 0px,var(--cyan) 12px,transparent 12px,transparent 20px);
+  }
+  .timeline-item{position:relative;margin-bottom:32px}
+  .timeline-node{
+    position:absolute;left:-42px;top:4px;width:20px;height:20px;
+    background:var(--navy);border:4px solid var(--cyan);transition:background 0.3s;
+  }
+  .timeline-item:hover .timeline-node{background:var(--yellow)}
+  .timeline-date{
+    font-size:11px;font-weight:500;color:var(--cyan);letter-spacing:0.05em;
+    margin-bottom:4px;background:var(--navy);display:inline-block;padding:2px 10px;
+  }
+  .timeline-item h4{font-size:clamp(15px,2vw,18px);font-weight:700;margin-bottom:4px}
+  .timeline-item .org{color:var(--text-dim);font-size:13px;margin-bottom:8px}
+  .timeline-item ul{list-style:none;padding:0}
+  .timeline-item li{
+    font-size:13px;color:var(--text-body);line-height:1.75;
+    padding:3px 0 3px 16px;position:relative;
+  }
+  .timeline-item li::before{content:'▸';position:absolute;left:0;color:var(--cyan);font-size:10px;top:5px}
+
+  /* ── Project Detail ── */
+  .detail-grid{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:clamp(24px,4vw,48px);align-items:start;max-width:1100px;margin:0 auto;
+  }
+  .detail-gallery img.main-img{
+    width:100%;border:4px solid rgba(94,220,244,0.2);cursor:zoom-in;
+  }
+  .gallery-thumbs{display:flex;gap:8px;margin-top:12px}
+  .gallery-thumbs img{
+    width:60px;height:45px;object-fit:cover;
+    border:2px solid rgba(94,220,244,0.2);cursor:pointer;transition:border-color 0.2s;
+  }
+  .gallery-thumbs img.active,.gallery-thumbs img:hover{border-color:var(--yellow)}
+  .detail-info h3{font-size:clamp(22px,3vw,32px);font-weight:900;color:var(--cyan);margin-bottom:8px}
+  .detail-info .detail-subtitle{font-size:13px;color:var(--text-dim);margin-bottom:24px}
+  .detail-section{margin-bottom:20px}
+  .detail-section h5{
+    font-size:12px;font-weight:500;color:var(--yellow);letter-spacing:0.05em;margin-bottom:8px;
+  }
+  .detail-section ul{list-style:none;padding:0}
+  .detail-section li{
+    font-size:14px;color:var(--text-body);line-height:1.8;
+    padding:3px 0 3px 14px;position:relative;
+  }
+  .detail-section li::before{content:'▸';position:absolute;left:0;color:var(--cyan);font-size:10px;top:5px}
+
+  /* Override detail text on colored surfaces */
+  .surface-cyan .detail-info h3,.surface-pink .detail-info h3,.surface-lavender .detail-info h3{color:var(--navy);text-shadow:none}
+  .surface-cyan .detail-info .detail-subtitle,.surface-pink .detail-info .detail-subtitle,.surface-lavender .detail-info .detail-subtitle{color:rgba(15,27,61,0.6)}
+  .surface-cyan .detail-section h5,.surface-pink .detail-section h5,.surface-lavender .detail-section h5{color:var(--navy)}
+  .surface-cyan .detail-section li,.surface-pink .detail-section li,.surface-lavender .detail-section li{color:rgba(15,27,61,0.72)}
+  .surface-cyan .detail-section li::before,.surface-pink .detail-section li::before,.surface-lavender .detail-section li::before{color:var(--navy)}
+  .surface-cyan .detail-section p,.surface-pink .detail-section p,.surface-lavender .detail-section p{color:rgba(15,27,61,0.72)}
+  .surface-cyan .gallery-thumbs img,.surface-pink .gallery-thumbs img,.surface-lavender .gallery-thumbs img{border-color:rgba(15,27,61,0.15)}
+  .surface-cyan .gallery-thumbs img.active,.surface-pink .gallery-thumbs img.active,.surface-lavender .gallery-thumbs img.active,
+  .surface-cyan .gallery-thumbs img:hover,.surface-pink .gallery-thumbs img:hover,.surface-lavender .gallery-thumbs img:hover{border-color:var(--navy)}
+  .surface-cyan .detail-gallery img.main-img,.surface-pink .detail-gallery img.main-img,.surface-lavender .detail-gallery img.main-img{border-color:rgba(15,27,61,0.15)}
+
+  /* ── Contact ── */
+  .contact-inner{text-align:center;max-width:500px;margin:0 auto}
+  .contact-links{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+
+  /* ── Lightbox ── */
+  .lightbox-overlay{
+    position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.92);
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity 0.35s;cursor:zoom-out;
+  }
+  .lightbox-overlay.active{opacity:1;pointer-events:auto}
+  .lightbox-overlay img{max-width:92vw;max-height:92vh;transform:scale(0.9);transition:transform 0.35s var(--ease)}
+  .lightbox-overlay.active img{transform:scale(1)}
+  .lightbox-close{
+    position:absolute;top:20px;right:24px;width:44px;height:44px;
+    background:rgba(255,255,255,0.12);color:var(--white);
+    border:none;cursor:pointer;font-size:1.3em;
+    display:flex;align-items:center;justify-content:center;
+    transition:background 0.2s;backdrop-filter:blur(8px);
+  }
+  .lightbox-close:hover{background:rgba(255,255,255,0.25)}
+
+  /* ── Footer ── */
+  .site-footer{text-align:center;padding:32px 24px;font-size:12px;color:var(--text-dim);z-index:10;position:relative}
+
+  /* ── Responsive ── */
+  @media(max-width:1024px){
+    .works-grid{grid-template-columns:1fr}
+    .detail-grid{grid-template-columns:1fr}
+    .detail-gallery{max-width:500px}
+  }
+  @media(max-width:600px){
+    .hero-stats{gap:16px}
+    .skills-grid{grid-template-columns:1fr}
+    .pixel-btn{padding:12px 24px;font-size:13px}
+    .contact-links{flex-direction:column;align-items:center}
+    .section{padding:4vh 16px}
+  }
+  @media(prefers-reduced-motion){
+    html{scroll-behavior:auto}
+    .starfield .star{animation:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- Atmosphere layers -->
+<div class="bg-grid"></div>
+<div class="grain"></div>
+<div class="scanlines"></div>
+<div class="crt-glow"></div>
+<div class="starfield" id="starfield"></div>
+
+<!-- ═══════════════ Hero ═══════════════ -->
+<section class="section surface-void" id="hero">
+  <div class="section-inner">
+    <div class="hero-inner">
+      <div class="label-pill">PORTFOLIO · 2026</div>
+      <h1 class="t-hero" style="margin-bottom:12px">刘欣然</h1>
+      <div class="hero-badge-cluster">
+        <span class="hero-badge-outline t-badge">AI × 心理学</span>
+        <span class="hero-badge-outline t-badge">产品实践者</span>
+        <span class="hero-badge-outline t-badge">4 独立产品</span>
+      </div>
+      <p class="t-hero-tagline" style="max-width:560px;margin:0 auto">
+        心理学硕士，专注 AI 与心理学的交叉领域。<br>
+        从用户洞察到产品落地，从 0 到 1 搭建了情绪疗愈应用、互动叙事游戏、<br>AI 学术日报自动化工作流和竞品情报监控系统。
+      </p>
+      <div class="hero-stats">
+        <div class="hero-stat-item stat-block bracketed">
+          <div class="t-stat">4</div>
+          <div class="stat-label">独立产品项目</div>
+        </div>
+        <div class="hero-stat-item stat-block bracketed bracketed-pink">
+          <div class="t-stat">15+</div>
+          <div class="stat-label">迭代版本管理</div>
+        </div>
+        <div class="hero-stat-item stat-block bracketed bracketed-yellow">
+          <div class="t-stat">1w</div>
+          <div class="stat-label">最快交付周期</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+        <a href="#works" class="pixel-btn">▼ 查看作品</a>
+        <a href="#about" class="pixel-btn pixel-btn-pink">▼ 了解更多</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ Works Overview ═══════════════ -->
+<section class="section surface-void" id="works">
+  <div class="section-inner">
+    <div class="label-pill">PROJECTS</div>
+    <h2 class="t-headline" style="margin-bottom:8px">精选作品</h2>
+    <p class="t-body" style="margin-bottom:32px;max-width:500px">从 0 到 1 的产品探索，覆盖心理健康、游戏叙事、AI 自动化与竞品分析四个方向</p>
+    <div class="works-grid">
+      <a href="#moodspring" class="works-card bracketed">
+        <img class="card-img" src="assets/ms-mood.png" alt="MoodSpring" loading="lazy">
+        <h4 class="t-subhead">MoodSpring 情绪疗愈</h4>
+        <p style="font-size:13px;color:var(--text-body);line-height:1.75;margin-top:8px">CBT × Plutchik 8维情绪模型 × AI对话</p>
+        <div class="card-meta"><span>📐 5 功能模块</span><span>🔄 15 迭代版本</span></div>
+      </a>
+      <a href="#game" class="works-card bracketed bracketed-pink">
+        <img class="card-img" src="assets/game-scene.jpg" alt="互动叙事游戏" loading="lazy">
+        <h4 class="t-subhead">互动叙事游戏</h4>
+        <p style="font-size:13px;color:var(--text-body);line-height:1.75;margin-top:8px">3关×40+交互节点 · 15成就稀有度系统</p>
+        <div class="card-meta"><span>🎯 15 成就</span><span>🌿 40+ 节点</span></div>
+      </a>
+      <a href="#daily" class="works-card bracketed bracketed-yellow">
+        <img class="card-img" src="assets/daily-1.png" alt="AI心理学日报" loading="lazy">
+        <h4 class="t-subhead">AI × 心理学日报</h4>
+        <p style="font-size:13px;color:var(--text-body);line-height:1.75;margin-top:8px">12+学术源 · Agent Pipeline 自动化</p>
+        <div class="card-meta"><span>📰 13 期</span><span>🔄 4 次迭代</span></div>
+      </a>
+      <a href="#compete" class="works-card bracketed bracketed-pink">
+        <img class="card-img" src="assets/ms-competitors1.png" alt="竞品情报监控" loading="lazy">
+        <h4 class="t-subhead">竞品情报监控系统</h4>
+        <p style="font-size:13px;color:var(--text-body);line-height:1.75;margin-top:8px">4 Agent协作 · 6竞品覆盖 · 全链路自动化</p>
+        <div class="card-meta"><span>🔍 6 竞品</span><span>📊 3 策略</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ MoodSpring Detail ═══════════════ -->
+<section class="section surface-cyan" id="moodspring">
+  <div class="section-inner">
+    <div class="label-pill">PROJECT · 情绪疗愈</div>
+    <div class="detail-grid">
+      <div class="detail-gallery bracketed">
+        <img class="main-img" src="assets/ms-mood.png" alt="MoodSpring" onclick="openLightbox(this.src)">
+        <div class="gallery-thumbs">
+          <img src="assets/ms-mood.png" class="active" onclick="document.querySelector('#moodspring .main-img').src=this.src">
+          <img src="assets/ms-cbt.png" onclick="document.querySelector('#moodspring .main-img').src=this.src">
+          <img src="assets/ms-draw.png" onclick="document.querySelector('#moodspring .main-img').src=this.src">
+          <img src="assets/ms-heal.png" onclick="document.querySelector('#moodspring .main-img').src=this.src">
+        </div>
+      </div>
+      <div class="detail-info">
+        <h3>MoodSpring 情绪疗愈</h3>
+        <p class="detail-subtitle">基于 CBT 的轻量情绪管理 Web 应用 · 独立开发 · 2025</p>
+        <div class="detail-section">
+          <h5>项目背景</h5>
+          <p style="font-size:14px;line-height:1.8">在回龙观医院实习期间完成用户需求挖掘，发现三大痛点：情绪命名混乱、记录后缺乏分析引导、疗愈环节缺少趣味性。结合 CBT「认知-情绪-行为」理论，设计「记录→分析→调节」闭环。</p>
+        </div>
+        <div class="detail-section">
+          <h5>核心功能</h5>
+          <ul>
+            <li>8维情绪模型（Plutchik情绪罗盘）+ 自定义滑条</li>
+            <li>DeepSeek API驱动的CBT对话，支持情绪画像注入</li>
+            <li>绘画疗愈游戏 × 正念呼吸引导（1-3分钟，5种音效）</li>
+            <li>情绪趋势可视化：折线图/饼图/日历热力图/30天回溯</li>
+            <li>数据导入导出、配图日记、离线降级</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <h5>技术实现</h5>
+          <ul>
+            <li>AI辅助编程（CodeBuddy）4周完成5功能模块</li>
+            <li>3000+行代码，15个迭代版本完整记录</li>
+            <li>DeepSeek API + localStorage + Express代理</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ Game Detail ═══════════════ -->
+<section class="section surface-pink" id="game">
+  <div class="section-inner">
+    <div class="label-pill">PROJECT · 互动叙事</div>
+    <div class="detail-grid">
+      <div class="detail-gallery bracketed">
+        <img class="main-img" src="assets/game-scene.jpg" alt="互动叙事游戏" onclick="openLightbox(this.src)">
+        <div class="gallery-thumbs">
+          <img src="assets/game-scene.jpg" class="active" onclick="document.querySelector('#game .main-img').src=this.src">
+          <img src="assets/game-level.jpg" onclick="document.querySelector('#game .main-img').src=this.src">
+          <img src="assets/game-option.jpg" onclick="document.querySelector('#game .main-img').src=this.src">
+        </div>
+      </div>
+      <div class="detail-info">
+        <h3>「我只是想拿全勤」</h3>
+        <p class="detail-subtitle">日常荒诞题材 · 多分支视觉小说 · 灵光AI无代码平台 · 2025</p>
+        <div class="detail-section">
+          <h5>项目背景</h5>
+          <p style="font-size:14px;line-height:1.8">轻量互动叙事赛道集中在悬疑和养成，"日常荒诞"几乎空白。以"打工人全勤"痛点为主题，将日常场景与黑色幽默结局结合。</p>
+        </div>
+        <div class="detail-section">
+          <h5>核心设计</h5>
+          <ul>
+            <li>3大关 × 10子关卡的多分支叙事结构</li>
+            <li>40+交互节点：场景点击 + 选项卡片双模式</li>
+            <li>15成就稀有度分级（SSR→B），死亡回溯机制</li>
+            <li>随机判定 + 隐藏彩蛋 + 4种if线结局</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <h5>产品成果</h5>
+          <ul>
+            <li>130+轮AI对话协作迭代</li>
+            <li>解决PC/移动端兼容性 + 新手引导缺失问题</li>
+            <li>潜力评分 4/5，题材击中打工人痛点</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ Daily Detail ═══════════════ -->
+<section class="section surface-void" id="daily">
+  <div class="section-inner">
+    <div class="label-pill">PROJECT · 自动化工作流</div>
+    <div class="detail-grid">
+      <div class="detail-gallery bracketed">
+        <img class="main-img" src="assets/daily-1.png" alt="AI心理学日报" onclick="openLightbox(this.src)">
+        <div class="gallery-thumbs">
+          <img src="assets/daily-1.png" class="active" onclick="document.querySelector('#daily .main-img').src=this.src">
+          <img src="assets/daily-2.png" onclick="document.querySelector('#daily .main-img').src=this.src">
+        </div>
+      </div>
+      <div class="detail-info">
+        <h3>AI × 心理学日报</h3>
+        <p class="detail-subtitle">基于 WorkBuddy 的自动化 Agent Pipeline · 2025</p>
+        <div class="detail-section">
+          <h5>项目背景</h5>
+          <p style="font-size:14px;line-height:1.8">需要持续追踪AI与心理学交叉领域最新进展，手动检索12+期刊效率极低。利用WorkBuddy搭建自动化Pipeline，实现全流程自动化。</p>
+        </div>
+        <div class="detail-section">
+          <h5>系统架构</h5>
+          <ul>
+            <li>学术源：Nature / PNAS / JAMA / Frontiers 等 12+ 期刊</li>
+            <li>采集策略：PubMed API批量筛选 + WebSearch精准补充</li>
+            <li>Pipeline：自动采集→去重筛选→结构化摘要→交叉引用→可视化</li>
+            <li>交付：HTML日报，含效应量数据、原文引用、趋势洞察</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <h5>进化轨迹</h5>
+          <ul>
+            <li>Alpha：5-6篇/期 → V3.0：10+篇/期，文章间交叉引用</li>
+            <li>14天完成4次架构迭代，建立故障模式库</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ Compete Detail ═══════════════ -->
+<section class="section surface-lavender" id="compete">
+  <div class="section-inner">
+    <div class="label-pill">PROJECT · 竞品分析</div>
+    <div class="detail-grid">
+      <div class="detail-gallery bracketed">
+        <img class="main-img" src="assets/ms-competitors1.png" alt="竞品情报监控" onclick="openLightbox(this.src)">
+        <div class="gallery-thumbs">
+          <img src="assets/ms-competitors1.png" class="active" onclick="document.querySelector('#compete .main-img').src=this.src">
+          <img src="assets/ms-competitors2.png" onclick="document.querySelector('#compete .main-img').src=this.src">
+        </div>
+      </div>
+      <div class="detail-info">
+        <h3>竞品情报监控系统</h3>
+        <p class="detail-subtitle">基于 Agent 流水线 · 竞品分析+自动化搭建 · 2025</p>
+        <div class="detail-section">
+          <h5>项目背景</h5>
+          <p style="font-size:14px;line-height:1.8">MoodSpring开发前期需系统性了解竞品功能布局。设计Agent流水线竞品监控系统，覆盖 Daylio、Headspace、Moodfit 等 6 款竞品，实现「采集→对比→分析→报告」全链路自动化。</p>
+        </div>
+        <div class="detail-section">
+          <h5>功能设计</h5>
+          <ul>
+            <li>4协作Agent（采集/对比/分析/报告），全链路自动化</li>
+            <li>可视化仪表盘：变更时间线 + 详情卡片 + 雷达图 + 象限分析</li>
+            <li>单轮7项竞品变更 + 影响评级（高/中/低）</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <h5>产品成果</h5>
+          <ul>
+            <li>提炼3条关键应对策略</li>
+            <li>锁定「情绪粒度记录 + CBT对话 + 正念呼吸 + 艺术疗愈」核心功能</li>
+            <li>建立自动化执行日志与可维护知识库</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ Skills ═══════════════ -->
+<section class="section surface-void" id="skills">
+  <div class="section-inner">
+    <div class="label-pill">SKILLS</div>
+    <h2 class="t-headline" style="margin-bottom:8px">专业能力</h2>
+    <p class="t-body" style="margin-bottom:32px;max-width:500px">AI + 心理学的双重背景，赋予我独特的产品视角</p>
+    <div class="skills-grid">
+      <div class="skill-card bracketed">
+        <div class="skill-icon-num">01</div>
+        <h4 class="t-subhead">用户研究与洞察</h4>
+        <p class="t-body" style="margin-top:8px">需求访谈、问卷设计、用户画像构建。在回龙观医院实习期间完成目标用户需求挖掘，将临床观察转化为产品功能点。</p>
+      </div>
+      <div class="skill-card bracketed bracketed-pink">
+        <div class="skill-icon-num">02</div>
+        <h4 class="t-subhead">产品设计与迭代</h4>
+        <p class="t-body" style="margin-top:8px">CBT 疗法产品化、多分支叙事设计、成就系统策划。15 个迭代版本的完整管理，每版对应具体场景优化。</p>
+      </div>
+      <div class="skill-card bracketed bracketed-yellow">
+        <div class="skill-icon-num">03</div>
+        <h4 class="t-subhead">AI Agent 工作流</h4>
+        <p class="t-body" style="margin-top:8px">WorkBuddy / CodeBuddy / 灵光AI 等多平台经验。从 Prompt Engineering 到 Pipeline 自动化，14 天 4 次架构迭代。</p>
+      </div>
+      <div class="skill-card bracketed">
+        <div class="skill-icon-num">04</div>
+        <h4 class="t-subhead">数据思维与分析</h4>
+        <p class="t-body" style="margin-top:8px">SPSS、R 数据处理，模型评估标准优化。AI 数据标注维度设计、产品核心指标定义与埋点规划。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ About ═══════════════ -->
+<section class="section surface-void" id="about">
+  <div class="section-inner">
+    <div class="label-pill">ABOUT</div>
+    <h2 class="t-headline" style="margin-bottom:32px">关于我</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-node"></div>
+        <div class="timeline-date">2023.09 - 2026.06</div>
+        <h4>首都师范大学 · 应用心理学硕士</h4>
+        <div class="org">临床与咨询方向 | 北京</div>
+        <ul>
+          <li>主修认知行为治疗（CBT）、心理咨询个案研究、高级心理统计</li>
+          <li>毕业论文：《大学生对AI提供心理健康服务的信任度及其影响因素》</li>
+          <li>国家社会科学基金重点项目：章节撰写、内容整合与申报</li>
+          <li>中国心理学会蓝皮书项目：内容调研、问卷设计</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-node"></div>
+        <div class="timeline-date">2024.07 - 2024.10</div>
+        <h4>北京智谱华章科技</h4>
+        <div class="org">AI 数据实习生 | 北京</div>
+        <ul>
+          <li>设计"优质/劣质内容"评估维度，审核效率提升 40%</li>
+          <li>识别模型高频场景，总结幻觉特征反馈优化</li>
+          <li>针对情感陪伴场景设计优质 Prompt</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-node"></div>
+        <div class="timeline-date">2025.03 - 至今</div>
+        <h4>独立产品项目 · AI × 心理学探索</h4>
+        <div class="org">MoodSpring / 互动叙事游戏 / AI心理学日报 / 竞品监控</div>
+        <ul>
+          <li>4周完成 MoodSpring 5个功能模块（3000+行代码），15迭代版本管理</li>
+          <li>设计40+交互节点的多分支叙事游戏，15成就稀有度分级系统</li>
+          <li>搭建覆盖12+学术源的自动化 Agent Pipeline，14天4次架构迭代</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-node"></div>
+        <div class="timeline-date">2018.09 - 2022.06</div>
+        <h4>浙江师范大学 · 经济学学士</h4>
+        <div class="org">国际经济与贸易（全英文）| 金华</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ Contact ═══════════════ -->
+<section class="section surface-void" id="contact">
+  <div class="section-inner">
+    <div class="contact-inner feature-card bracketed bracketed-yellow" style="padding:48px">
+      <div class="label-pill">CONTACT</div>
+      <div class="quote-line" style="margin:16px auto 24px"></div>
+      <h3 class="t-headline" style="margin-bottom:12px">与我联系</h3>
+      <p class="t-body" style="margin-bottom:28px">希望能在 AI 产品领域深耕，欢迎随时联系。</p>
+      <div class="contact-links">
+        <a href="mailto:lsusanr@foxmail.com" class="pixel-btn">lsusanr@foxmail.com</a>
+        <a href="tel:18132030958" class="pixel-btn pixel-btn-pink">181-3203-0958</a>
+      </div>
+      <p style="font-size:12px;color:var(--text-dim);margin-top:28px">© 2026 刘欣然 · AI × 心理学 产品实践者</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <p>© 2026 刘欣然 · 作品集 | AI × 心理学 产品实践者</p>
+</footer>
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="大图预览">
+</div>
+
+<script>
+// ── Starfield ──
+(function(){
+  const sf=document.getElementById('starfield');
+  const colors=['#5EDCF4','#F0A6CA','#F4D03F','#E2D5F2'];
+  for(let i=0;i<60;i++){
+    const star=document.createElement('div');
+    star.className='star';
+    star.style.left=(Math.random()*100)+'%';
+    star.style.top=(Math.random()*100)+'%';
+    const s=3+Math.random()*3;
+    star.style.width=s+'px';star.style.height=s+'px';
+    star.style.background=colors[Math.floor(Math.random()*colors.length)];
+    star.style.animationDelay=(Math.random()*3)+'s';
+    star.style.animationDuration=(2+Math.random()*4)+'s';
+    sf.appendChild(star);
+  }
+})();
+
+// ── Gallery thumbnail active state sync ──
+document.querySelectorAll('.gallery-thumbs img').forEach(thumb=>{
+  thumb.addEventListener('click',function(){
+    this.parentElement.querySelectorAll('img').forEach(t=>t.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// ── Lightbox ──
+function openLightbox(src){
+  const lb=document.getElementById('lightboxOverlay');
+  document.getElementById('lightboxImg').src=src;
+  lb.classList.add('active');
+}
+function closeLightbox(){
+  document.getElementById('lightboxOverlay').classList.remove('active');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox()});
+</script>
+</body>
+</html>
